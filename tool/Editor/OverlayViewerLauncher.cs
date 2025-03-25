@@ -10,17 +10,17 @@ using System.Diagnostics;
 public class OverlayViewerLauncher : MonoBehaviour
 {
     private static Process viewer = null;
-    
+
     static OverlayViewerLauncher()
     {
         EditorApplication.playModeStateChanged += (state) =>
         {
             // Set from kurohuku tool
             if (!EditorPrefs.GetBool("launchOverlayViewer")) return;
-            
+
             if (state == PlayModeStateChange.EnteredPlayMode)
             {
-                viewer = Process.Start(@"C:\Program Files (x86)\Steam\steamapps\common\SteamVR\bin\win32\overlay_viewer.exe");
+                viewer = Process.Start(EditorPrefs.GetString("overlayViewerPath"));
             }
             else if (state == PlayModeStateChange.ExitingPlayMode)
             {

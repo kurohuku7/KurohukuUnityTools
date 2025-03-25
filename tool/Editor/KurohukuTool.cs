@@ -50,15 +50,33 @@ public class KurohukuTool : OdinEditorWindow
 
     [PropertyOrder(2)]
     [ShowInInspector]
+    public string overlayViewerPath
+    {
+        get
+        {
+            var value = EditorPrefs.GetString("overlayViewerPath");
+            if (value == "")
+            {
+                var defaultValue = @"C:\Program Files (x86)\Steam\steamapps\common\SteamVR\bin\win64\overlay_viewer.exe";
+                EditorPrefs.SetString("overlayViewerPath", defaultValue);
+                return defaultValue;
+            }
+            return value;
+        }
+        set => EditorPrefs.SetString("overlayViewerPath", value);
+    }
+
+    [PropertyOrder(3)]
+    [ShowInInspector]
     public bool nullDriver
     {
         get => EditorPrefs.GetBool("nullDriver");
         set
         {
             var settingPath = steamVRPath + @"\drivers\null\resources\settings\default.vrsettings";
-            
+
             EditorPrefs.SetBool("nullDriver", value);
-            
+
             // ファイルを書き換える
             if (File.Exists(settingPath))
             {
@@ -101,15 +119,15 @@ public class KurohukuTool : OdinEditorWindow
 
     [PropertyOrder(5)]
     public string buildPath = @"J:\UnityProjects\OVRLocomotionEffect\build";
-    
-    [PropertyOrder(5)]
+
+    [PropertyOrder(6)]
     [Button]
     public void DeployDemo()
     {
         DeployToSteam(true);
     }
 
-    [PropertyOrder(6)]
+    [PropertyOrder(7)]
     [Button]
     public void DeployProduct()
     {
@@ -137,7 +155,7 @@ public class KurohukuTool : OdinEditorWindow
         {
             Directory.Delete(backupDirectoryPath, true);
         }
-        
+
         // アップロード用のフォルダにビルドしたファイルをコピー
         CopyDirectory(buildPath, contentPath);
 
@@ -162,7 +180,7 @@ public class KurohukuTool : OdinEditorWindow
         }
         process.WaitForExit();
         process.Close();
-        
+
         Process.Start(new ProcessStartInfo
         {
             FileName = steamworksBuildUrl + (isDemo ? steamDemoId : steamProductId),
